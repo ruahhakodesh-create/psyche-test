@@ -7,9 +7,9 @@
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
   <div class="bg-white shadow-lg rounded-2xl p-10 max-w-lg w-full text-center">
-    <h1 class="text-3xl font-bold text-gray-800">Zbadaj swój stan psychiczny</h1>
+    <h1 id="mainTitle" class="text-3xl font-bold text-gray-800">Zbadaj swój stan psychiczny</h1>
 
-    <!-- Licznik postępu pod tytułem -->
+    <!-- Licznik postępu -->
     <div id="progress" class="mt-2 text-gray-700 font-semibold">1/3</div>
 
     <!-- Stałe miejsce na pytanie -->
@@ -17,7 +17,7 @@
       <p id="question" class="text-lg text-gray-600"></p>
     </div>
 
-    <div class="space-x-6">
+    <div id="buttons" class="space-x-6">
       <button 
         class="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-xl shadow"
         onclick="answer('yes')">
@@ -65,14 +65,17 @@
     function showResult() {
       let sentence = "";
       if (score >= 2) {
-        sentence = "Twój aktualny stan to wysoki poziom energii. Wykorzystaj go, aby podjąć zadanie, które wymaga odwagi i determinacji.";
+        sentence = "Twój aktualny stan to wysoki poziom energii. Masz dziś zasoby, by ruszyć z rzeczami, które wymagają determinacji. Skorzystaj z tego momentu i przeznacz siły na coś, co naprawdę przesunie sprawy do przodu.";
       } else {
-        sentence = "Twój aktualny stan to niski poziom energii. Skup się na priorytetach i nie przeciążaj się dodatkowymi obowiązkami.";
+        sentence = "Twój aktualny stan to niski poziom energii. To nie porażka, tylko sygnał, że dziś lepiej działać w krótszych krokach. Skup się na priorytetach i daj sobie prawo do spokojniejszego tempa.";
       }
-      // schowaj UI pytań
-      document.getElementById("questionBox").style.display = "none";
-      document.querySelector("div.space-x-6").style.display = "none";
+
+      // ukryj cały UI testu
+      document.getElementById("mainTitle").style.display = "none";
       document.getElementById("progress").style.display = "none";
+      document.getElementById("questionBox").style.display = "none";
+      document.getElementById("buttons").style.display = "none";
+
       // pokaż wynik
       document.getElementById("result").innerText = sentence;
     }
