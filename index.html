@@ -35,19 +35,17 @@
   </div>
 
   <script>
-    // 6 pytań: 3 o energię, 3 o nastrój.
-    // yesVal/noVal określają kierunek biegunu (np. TAK na energię = +1 -> "wysoka energia").
+    // Pytania: 3 energia, 3 nastrój
     const questions = [
-      { text: "Czy dziś czujesz przypływ energii do działania?",   category: "energia", yesVal: +1, noVal: -1 },
-      { text: "Czy łatwo było Ci wstać i rozpocząć dzień?",        category: "energia", yesVal: +1, noVal: -1 },
-      { text: "Czy masz siłę, by zmierzyć się z trudniejszym zadaniem?", category: "energia", yesVal: +1, noVal: -1 },
+      { text: "Czy czujesz, że łatwo możesz zabrać się do działania?", category: "energia", yesVal: +1, noVal: -1 },
+      { text: "Czy masz w sobie wystarczająco siły, by podjąć kolejne zadania?", category: "energia", yesVal: +1, noVal: -1 },
+      { text: "Czy jesteś gotów zmierzyć się z czymś wymagającym wysiłku?", category: "energia", yesVal: +1, noVal: -1 },
 
-      { text: "Czy dziś dominują u Ciebie raczej dobre emocje?",   category: "nastroj", yesVal: +1, noVal: -1 },
-      { text: "Czy łatwo było Ci znaleźć powody do zadowolenia?",  category: "nastroj", yesVal: +1, noVal: -1 },
-      { text: "Czy drobne trudności nie psują Ci dziś nastroju?",  category: "nastroj", yesVal: +1, noVal: -1 }
+      { text: "Czy w tej chwili towarzyszy ci raczej pogodny niż przygaszony nastrój?", category: "nastroj", yesVal: +1, noVal: -1 },
+      { text: "Czy drobne trudności nie odbierają ci ogólnego poczucia równowagi?", category: "nastroj", yesVal: +1, noVal: -1 },
+      { text: "Czy patrzysz na sprawy w jaśniejszych barwach niż zazwyczaj?", category: "nastroj", yesVal: +1, noVal: -1 }
     ];
 
-    // Scoring netto per kategoria
     const scores = { energia: 0, nastroj: 0 };
     let current = 0;
 
@@ -73,31 +71,28 @@
     }
 
     function dominantCategory() {
-      // wybór kategorii o większej wartości bezwzględnej; remis -> preferuj tę z ostatniego pytania
       const absEnergia = Math.abs(scores.energia);
       const absNastroj = Math.abs(scores.nastroj);
       if (absEnergia > absNastroj) return "energia";
       if (absNastroj > absEnergia) return "nastroj";
-      // remis – zdecyduj po kolejności (ostatnia odpowiedź rozstrzyga)
       const lastCat = questions[Math.max(0, current - 1)].category;
       return lastCat;
     }
 
     function sentenceFor(category, value) {
-      // value > 0 -> biegun "pozytywny/wysoki", value < 0 -> "negatywny/niski"
       const bank = {
         energia: {
-          high: "Twój aktualny stan to wysoki poziom energii. Masz dziś zasoby, by podjąć zadanie wymagające odwagi i determinacji; zacznij od sprawy, która realnie przesuwa cię do przodu.",
-          low:  "Twój aktualny stan to niski poziom energii. Ogranicz zakres do priorytetów i pracuj krótkimi odcinkami — to dziś najlepsza strategia skuteczności bez przeciążenia."
+          high: "Twój aktualny stan to wysoki poziom energii. Wykorzystaj ten zasób, by podjąć zadania wymagające determinacji — masz warunki, by ruszyć do przodu.",
+          low: "Twój aktualny stan to niski poziom energii. Skup się na priorytetach i działaj krótszymi krokami — to pozwoli ci zachować skuteczność bez przeciążenia."
         },
         nastroj: {
-          high: "Twój aktualny stan to pozytywny nastrój. Wykorzystaj go do kontaktów i decyzji, które zyskują na lekkości; to dobry moment, by nadać ton rozmowom i działaniom.",
-          low:  "Twój aktualny stan to przygaszony nastrój. Zmniejsz oczekiwania i wybierz jedno konkretne zadanie — klarowność i prostota pomogą odzyskać równowagę."
+          high: "Twój aktualny stan to pozytywny nastrój. To dobry moment na kontakty i decyzje, które zyskują na otwartości — twoje nastawienie sprzyja konstruktywnym wyborom.",
+          low: "Twój aktualny stan to obniżony nastrój. Zmniejsz presję wobec siebie i wybierz jedno zadanie, które da ci poczucie małego, ale realnego sukcesu."
         }
       };
       if (category === "energia") return (value >= 0) ? bank.energia.high : bank.energia.low;
       if (category === "nastroj") return (value >= 0) ? bank.nastroj.high : bank.nastroj.low;
-      return "Wynik niejednoznaczny. Wróć do testu i odpowiedz zgodnie z pierwszą intuicją.";
+      return "Wynik niejednoznaczny. Spróbuj ponownie.";
     }
 
     function showResult() {
@@ -105,7 +100,6 @@
       const val = scores[cat];
       const sentence = sentenceFor(cat, val);
 
-      // przełącz na widok wyniku
       document.getElementById("testBox").style.display = "none";
       document.getElementById("resultBox").classList.remove("hidden");
       document.getElementById("result").innerText = sentence;
