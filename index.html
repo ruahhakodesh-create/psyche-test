@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Psyche Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+    }
+    button {
+      font-size: 20px;
+      padding: 15px 40px;
+      margin: 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .yes { background-color: #4CAF50; color: white; }
+    .no { background-color: #f44336; color: white; }
+    #result { margin-top: 40px; font-size: 22px; }
+  </style>
+</head>
+<body>
+  <h1>Psyche Test</h1>
+  <p>Czy dziś czujesz przypływ energii do działania?</p>
+  <button class="yes" onclick="showResult('high')">TAK</button>
+  <button class="no" onclick="showResult('low')">NIE</button>
+
+  <div id="result"></div>
+
+  <script>
+    function showResult(state) {
+      let sentence = "";
+      if (state === "high") {
+        sentence = "Twój obecny stan dominuje: wysoki poziom energii. To dobry moment, aby ruszyć z zadaniem, które wymaga odwagi i determinacji.";
+      } else {
+        sentence = "Twój obecny stan dominuje: niski poziom energii. Skup się na priorytetach i zrób dziś tylko to, co naprawdę ma znaczenie.";
+      }
+      document.getElementById("result").innerText = sentence;
+    }
+  </script>
+</body>
+</html>
