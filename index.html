@@ -2,13 +2,18 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <title>Psyche Test</title>
+  <title>Zbadaj swój stan psychiczny</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
   <div class="bg-white shadow-lg rounded-2xl p-10 max-w-lg w-full text-center">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">Psyche Test</h1>
-    <p id="question" class="text-lg text-gray-600 mb-8"></p>
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Zbadaj swój stan psychiczny</h1>
+    
+    <!-- Stałe miejsce na pytanie -->
+    <div id="questionBox" class="h-24 flex items-center justify-center mb-8">
+      <p id="question" class="text-lg text-gray-600"></p>
+    </div>
+
     <div class="space-x-6">
       <button 
         class="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-xl shadow"
@@ -21,6 +26,7 @@
         NIE
       </button>
     </div>
+
     <div id="result" class="mt-10 text-xl text-gray-700 font-medium"></div>
   </div>
 
@@ -36,7 +42,8 @@
 
     function showQuestion() {
       if (currentQuestion < questions.length) {
-        document.getElementById("question").innerText = questions[currentQuestion];
+        document.getElementById("question").innerText = 
+          `Pytanie ${currentQuestion + 1}/${questions.length}: ${questions[currentQuestion]}`;
       } else {
         showResult();
       }
@@ -55,7 +62,7 @@
       } else {
         sentence = "Twój aktualny stan to niski poziom energii. Skup się na priorytetach i nie przeciążaj się dodatkowymi obowiązkami.";
       }
-      document.getElementById("question").innerText = "";
+      document.getElementById("questionBox").style.display = "none";
       document.querySelector("div.space-x-6").style.display = "none";
       document.getElementById("result").innerText = sentence;
     }
