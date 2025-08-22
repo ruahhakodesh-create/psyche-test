@@ -3,40 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <title>Psyche Test</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 100px;
-    }
-    button {
-      font-size: 20px;
-      padding: 15px 40px;
-      margin: 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .yes { background-color: #4CAF50; color: white; }
-    .no { background-color: #f44336; color: white; }
-    #result { margin-top: 40px; font-size: 22px; }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <h1>Psyche Test</h1>
-  <p>Czy dziś czujesz przypływ energii do działania?</p>
-  <button class="yes" onclick="showResult('high')">TAK</button>
-  <button class="no" onclick="showResult('low')">NIE</button>
-
-  <div id="result"></div>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white shadow-lg rounded-2xl p-10 max-w-lg w-full text-center">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Psyche Test</h1>
+    <p class="text-lg text-gray-600 mb-8">Czy dziś czujesz przypływ energii do działania?</p>
+    <div class="space-x-6">
+      <button 
+        class="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-xl shadow"
+        onclick="showResult('high')">
+        TAK
+      </button>
+      <button 
+        class="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-3 rounded-xl shadow"
+        onclick="showResult('low')">
+        NIE
+      </button>
+    </div>
+    <div id="result" class="mt-10 text-xl text-gray-700 font-medium"></div>
+  </div>
 
   <script>
     function showResult(state) {
       let sentence = "";
       if (state === "high") {
-        sentence = "Twój obecny stan dominuje: wysoki poziom energii. To dobry moment, aby ruszyć z zadaniem, które wymaga odwagi i determinacji.";
+        sentence = "Twój aktualny stan to wysoki poziom energii. Wykorzystaj go, aby podjąć zadanie, które wymaga odwagi i determinacji.";
       } else {
-        sentence = "Twój obecny stan dominuje: niski poziom energii. Skup się na priorytetach i zrób dziś tylko to, co naprawdę ma znaczenie.";
+        sentence = "Twój aktualny stan to niski poziom energii. Skup się na priorytetach i nie przeciążaj się dodatkowymi obowiązkami.";
       }
       document.getElementById("result").innerText = sentence;
     }
