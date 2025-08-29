@@ -2,110 +2,166 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Zbadaj swój stan psychiczny</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 400px;
+      max-width: 90%;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+    }
+    .progress {
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #374151;
+    }
+    .question-box {
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      margin-bottom: 25px;
+      padding: 10px;
+    }
+    .buttons {
+      display: flex;
+      justify-content: space-around;
+    }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      cursor: pointer;
+      color: white;
+      font-weight: bold;
+      transition: transform 0.15s ease;
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+    .yes { background: #16a34a; }
+    .no { background: #dc2626; }
+    .result {
+      font-size: 1.1rem;
+      line-height: 1.5;
+      color: #111827;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-  <!-- Pudełko testu -->
-  <div id="testBox" class="bg-white shadow-lg rounded-2xl p-10 max-w-lg w-full text-center">
-    <h1 id="mainTitle" class="text-3xl font-bold text-gray-800">Zbadaj swój stan psychiczny</h1>
-    <div id="progress" class="mt-2 text-gray-700 font-semibold">1/6</div>
-
-    <div id="questionBox" class="h-28 flex items-center justify-center mt-6 mb-6">
-      <p id="question" class="text-lg text-gray-600"></p>
-    </div>
-
-    <div id="buttons" class="space-x-6">
-      <button
-        class="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-xl shadow"
-        onclick="answer('yes')">
-        TAK
-      </button>
-      <button
-        class="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-3 rounded-xl shadow"
-        onclick="answer('no')">
-        NIE
-      </button>
-    </div>
-  </div>
-
-  <!-- Pudełko wyniku -->
-  <div id="resultBox" class="hidden bg-white shadow-lg rounded-2xl p-10 max-w-2xl w-full text-center">
-    <p id="result" class="text-xl text-gray-800 font-medium leading-relaxed"></p>
+<body>
+  <div class="container">
+    <h1 id="title">Zbadaj swój stan psychiczny</h1>
+    <div id="progress" class="progress"></div>
+    <div id="question-box" class="question-box"></div>
+    <div class="buttons" id="buttons"></div>
+    <div id="result" class="result" style="display:none;"></div>
   </div>
 
   <script>
-    // Pytania: 3 energia, 3 nastrój
     const questions = [
-      { text: "Czy czujesz, że łatwo możesz zabrać się do działania?", category: "energia", yesVal: +1, noVal: -1 },
-      { text: "Czy masz w sobie wystarczająco siły, by podjąć kolejne zadania?", category: "energia", yesVal: +1, noVal: -1 },
-      { text: "Czy jesteś gotów zmierzyć się z czymś wymagającym wysiłku?", category: "energia", yesVal: +1, noVal: -1 },
-
-      { text: "Czy w tej chwili towarzyszy ci raczej pogodny niż przygaszony nastrój?", category: "nastroj", yesVal: +1, noVal: -1 },
-      { text: "Czy drobne trudności nie odbierają ci ogólnego poczucia równowagi?", category: "nastroj", yesVal: +1, noVal: -1 },
-      { text: "Czy patrzysz na sprawy w jaśniejszych barwach niż zazwyczaj?", category: "nastroj", yesVal: +1, noVal: -1 }
+      "Czy czujesz dziś wysoką energię do działania?",
+      "Czy masz poczucie wewnętrznego spokoju?",
+      "Czy łatwo Ci się skoncentrować?",
+      "Czy masz dziś ochotę na kontakt z ludźmi?",
+      "Czy czujesz spadek energii i zmęczenie?",
+      "Czy dominuje u Ciebie przygnębienie lub smutek?",
+      "Czy rozpraszasz się łatwo i trudno Ci skończyć zadania?",
+      "Czy unikasz kontaktu z innymi ludźmi?"
     ];
 
-    const scores = { energia: 0, nastroj: 0 };
-    let current = 0;
+    const results = {
+      energy_high: [
+        "Masz w sobie dziś wyjątkową energię, która może stać się źródłem wielu owocnych działań. Wykorzystaj ten stan, aby ruszyć z tym, co odkładałeś na później i nadać sprawom realny kierunek."
+      ],
+      energy_low: [
+        "Twoja energia jest teraz obniżona, co może być sygnałem, by dać sobie przestrzeń na odpoczynek. Zadbaj o małe kroki zamiast wielkich wyzwań – regeneracja to także postęp."
+      ],
+      mood_positive: [
+        "Twój nastrój jest wyraźnie pozytywny i sprzyja otwartości na innych ludzi oraz nowe doświadczenia. To dobry moment, aby podejmować rozmowy, inicjatywy i wzmacniać relacje."
+      ],
+      mood_negative: [
+        "Dominują u Ciebie trudniejsze emocje, które mogą spowalniać działania. Nie oceniaj ich zbyt surowo – potraktuj je jako sygnał, że potrzebujesz więcej uważności na siebie i własne potrzeby."
+      ],
+      focus_high: [
+        "Twoja koncentracja działa teraz na wysokim poziomie. To doskonała chwila, by skupić się na zadaniach wymagających uwagi i dokładności – możesz osiągnąć więcej, niż myślisz."
+      ],
+      focus_low: [
+        "Obecnie trudno Ci utrzymać uwagę na jednym zadaniu, co może budzić frustrację. Zamiast walczyć z tym stanem, spróbuj krótkich przerw i prostych czynności, które uporządkują myśli."
+      ],
+      social_open: [
+        "Masz otwartość na ludzi i kontakt z otoczeniem, co sprzyja budowaniu więzi i pozytywnej atmosfery wokół Ciebie. To moment, aby wzmacniać relacje, które są dla Ciebie ważne."
+      ],
+      social_closed: [
+        "Potrzebujesz dziś więcej przestrzeni dla siebie i dystansu od innych. To naturalne – nie każdy dzień jest dobry na interakcje. Zadbaj o komfort i wyciszenie, które pozwolą Ci odzyskać równowagę."
+      ]
+    };
 
-    function updateProgress() {
-      document.getElementById("progress").innerText =
-        `${Math.min(current + 1, questions.length)}/${questions.length}`;
-    }
+    let currentQuestion = 0;
+    let scores = {energy:0, mood:0, focus:0, social:0};
 
     function showQuestion() {
-      if (current < questions.length) {
-        document.getElementById("question").innerText = questions[current].text;
-        updateProgress();
+      if (currentQuestion < questions.length) {
+        document.getElementById("progress").textContent = `${currentQuestion+1}/${questions.length}`;
+        document.getElementById("question-box").textContent = questions[currentQuestion];
+        document.getElementById("buttons").innerHTML = `
+          <button class="yes" onclick="answer('yes')">TAK</button>
+          <button class="no" onclick="answer('no')">NIE</button>
+        `;
       } else {
         showResult();
       }
     }
 
     function answer(choice) {
-      const q = questions[current];
-      scores[q.category] += (choice === 'yes') ? q.yesVal : q.noVal;
-      current++;
+      if (currentQuestion === 0) scores.energy += (choice==="yes"?1:0);
+      if (currentQuestion === 4) scores.energy += (choice==="no"?1:0);
+      if (currentQuestion === 1) scores.mood += (choice==="yes"?1:0);
+      if (currentQuestion === 5) scores.mood += (choice==="no"?1:0);
+      if (currentQuestion === 2) scores.focus += (choice==="yes"?1:0);
+      if (currentQuestion === 6) scores.focus += (choice==="no"?1:0);
+      if (currentQuestion === 3) scores.social += (choice==="yes"?1:0);
+      if (currentQuestion === 7) scores.social += (choice==="no"?1:0);
+
+      currentQuestion++;
       showQuestion();
     }
 
-    function dominantCategory() {
-      const absEnergia = Math.abs(scores.energia);
-      const absNastroj = Math.abs(scores.nastroj);
-      if (absEnergia > absNastroj) return "energia";
-      if (absNastroj > absEnergia) return "nastroj";
-      const lastCat = questions[Math.max(0, current - 1)].category;
-      return lastCat;
-    }
-
-    function sentenceFor(category, value) {
-      const bank = {
-        energia: {
-          high: "Twój aktualny stan to wysoki poziom energii. Wykorzystaj ten zasób, by podjąć zadania wymagające determinacji — masz warunki, by ruszyć do przodu.",
-          low: "Twój aktualny stan to niski poziom energii. Skup się na priorytetach i działaj krótszymi krokami — to pozwoli ci zachować skuteczność bez przeciążenia."
-        },
-        nastroj: {
-          high: "Twój aktualny stan to pozytywny nastrój. To dobry moment na kontakty i decyzje, które zyskują na otwartości — twoje nastawienie sprzyja konstruktywnym wyborom.",
-          low: "Twój aktualny stan to obniżony nastrój. Zmniejsz presję wobec siebie i wybierz jedno zadanie, które da ci poczucie małego, ale realnego sukcesu."
-        }
-      };
-      if (category === "energia") return (value >= 0) ? bank.energia.high : bank.energia.low;
-      if (category === "nastroj") return (value >= 0) ? bank.nastroj.high : bank.nastroj.low;
-      return "Wynik niejednoznaczny. Spróbuj ponownie.";
-    }
-
     function showResult() {
-      const cat = dominantCategory();
-      const val = scores[cat];
-      const sentence = sentenceFor(cat, val);
+      document.getElementById("title").style.display = "none";
+      document.getElementById("progress").style.display = "none";
+      document.getElementById("question-box").style.display = "none";
+      document.getElementById("buttons").style.display = "none";
 
-      document.getElementById("testBox").style.display = "none";
-      document.getElementById("resultBox").classList.remove("hidden");
-      document.getElementById("result").innerText = sentence;
+      let resultKey;
+      if (scores.energy>0) resultKey="energy_high"; else resultKey="energy_low";
+      if (scores.mood>0) resultKey="mood_positive"; else if(scores.mood<0) resultKey="mood_negative";
+      if (scores.focus>0) resultKey="focus_high"; else if(scores.focus<0) resultKey="focus_low";
+      if (scores.social>0) resultKey="social_open"; else if(scores.social<0) resultKey="social_closed";
+
+      document.getElementById("result").textContent = results[resultKey][0];
+      document.getElementById("result").style.display = "block";
     }
 
-    // start
     showQuestion();
   </script>
 </body>
